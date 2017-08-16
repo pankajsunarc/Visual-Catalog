@@ -1,0 +1,27 @@
+{
+  "name": "sunarc/magento2-visualcatalog",
+  "description": "Magento 2.0 Visual Catalog",
+  "type": "magento2-module",
+  "version": "1.0.1",
+  "license": [
+    "OSL-3.0",
+    "AFL-3.0"
+  ],
+  "require": {
+    "php": "~5.5.0|~5.6.0|~7.0.0",
+    "magento/framework": "~100.0.4"
+  },
+  "autoload": {
+    "files": [ "registration.php" ],
+    "psr-4": {
+      "Magento\\SampleNewPage\\": ""
+    }
+  },
+  "scripts": {
+    "post-package-install": [
+      "bin/magento module:enable Sunarc_Visualcatalog",
+      "bin/magento setup:upgrade",
+      "bin/magento cache:clear"
+    ]
+  }
+}
