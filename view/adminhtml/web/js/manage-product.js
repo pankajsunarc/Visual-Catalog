@@ -14,7 +14,8 @@ require([
 ], function (jQuery, confirm) {
     'use strict';
 
-    function openProductList(url, isRoot) {
+    function openProductList(url, isRoot)
+    {
         if ($('browser_window') && typeof(Windows) != 'undefined') {
             Windows.focus('browser_window');
             return;

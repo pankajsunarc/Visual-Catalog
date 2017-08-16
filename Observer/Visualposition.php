@@ -15,17 +15,15 @@ class Visualposition implements ObserverInterface
 
         $categories = $_product->getCategoryIds();
 
-        foreach($categories as $categoryId){
+        foreach ($categories as $categoryId) {
             $category = $objectManager->create('Magento\Catalog\Model\Category')->load($categoryId);
             $productPositions = $category->getProductsPosition();
             $lastPositions = max($productPositions);
-            if (count(array_keys($productPositions, $productPositions[$_productId])) > 1)
-            {
+            if (count(array_keys($productPositions, $productPositions[$_productId])) > 1) {
                 $productPositions[$_productId] = $lastPositions+1;
                 $category->setPostedProducts($productPositions);
                 $category->save();
             }
         }
-
     }
 }

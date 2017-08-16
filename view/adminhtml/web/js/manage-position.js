@@ -33,7 +33,8 @@ require([
         }
     });
 
-    function submitPositionForm(url) {
+    function submitPositionForm(url)
+    {
         if ($('browser_window') && typeof(Windows) != 'undefined') {
             Windows.focus('browser_window');
             return;
@@ -52,7 +53,8 @@ require([
 
     }
 
-    function changePageLimit() {
+    function changePageLimit()
+    {
         location.href = $('limiter').value;
     }
 

@@ -5,22 +5,19 @@ namespace Sunarc\Visualcatalog\Block\Adminhtml;
 class Button extends \Magento\Backend\Block\Template
 {
 
-    protected $request;
-
     public function __construct(
-        \Magento\Backend\Block\Template\Context  $context,
-        \Magento\Framework\App\Request\Http $request
+        \Magento\Framework\View\Element\Template\Context $context
     ) {
-        $this->request = $request;
+    
         parent::__construct($context);
     }
 
     /**
      * @return $this
      */
-    protected function _prepareLayout()
+    public function _prepareLayout()
     {
-        $id = $this->request->getParam('id');
+        $id = $this->_request->getParam('id');
         $addUrl = $this->getUrl("visualcatalog/catalog/index", ['_current' => false, 'id' => $id, '_query' => false]);
 
         $this->addChild(
@@ -36,7 +33,6 @@ class Button extends \Magento\Backend\Block\Template
 
         return parent::_prepareLayout();
     }
-
 
     /**
      * @return string

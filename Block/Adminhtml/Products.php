@@ -9,15 +9,16 @@ class Products extends \Magento\Backend\Block\Widget\Grid\Extended
      *
      * @var \Magento\Framework\Registry
      */
-    protected $_coreRegistry = null;
+    private $coreRegistry = null;
 
-    protected $_productFactory;
+    private $productFactory;
 
-    protected $_productRepositoryFactory;
-    protected $_storeManager;
+    private $productRepositoryFactory;
+    private $storeManager;
 
-    protected $_category;
-    protected $_pageSize = 10;
+    private $category;
+    private $pageSize = 10;
+
     /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Backend\Helper\Data $backendHelper
@@ -34,13 +35,14 @@ class Products extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    )
-    {
-        $this->_productFactory = $productFactory;
-        $this->_coreRegistry = $coreRegistry;
-        $this->_productRepositoryFactory = $productRepositoryFactory;
-        $this->_storeManager = $storeManager;
-        $this->_categoryFactory = $categoryFactory;
+    ) {
+    
+
+        $this->productFactory = $productFactory;
+        $this->coreRegistry = $coreRegistry;
+        $this->productRepositoryFactory = $productRepositoryFactory;
+        $this->storeManager = $storeManager;
+        $this->categoryFactory = $categoryFactory;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -51,9 +53,9 @@ class Products extends \Magento\Backend\Block\Widget\Grid\Extended
         parent::_prepareLayout();
         if ($this->_getProductCollection()) {
             // create pager block for collection
-            $pager = $this->getLayout()->createBlock('Magento\Theme\Block\Html\Pager','my.custom.pager');
+            $pager = $this->getLayout()->createBlock('Magento\Theme\Block\Html\Pager', 'my.custom.pager');
 
-            $pager->setAvailableLimit(array(10=>10,20=>20,30=>30,50=>50,100=>100))->setShowPerPage(true)->setCollection(
+            $pager->setAvailableLimit([10 => 10, 20 => 20, 30 => 30, 50 => 50, 100 => 100])->setShowPerPage(true)->setCollection(
                 $this->_getProductCollection()
             );
             $pager->setTemplate('Sunarc_Visualcatalog::pager.phtml');
@@ -80,18 +82,15 @@ class Products extends \Magento\Backend\Block\Widget\Grid\Extended
             ]
         );
         return $this;
-
     }
-
 
     /**
      * @return array|null
      */
     public function getCategory()
     {
-        return $this->_coreRegistry->registry('category');
+        return $this->coreRegistry->registry('category');
     }
-
 
     /**
      * Retrieve loaded category collection
@@ -103,10 +102,9 @@ class Products extends \Magento\Backend\Block\Widget\Grid\Extended
         return $this->_getProductCollection();
     }
 
-
     public function getCurrentCategory()
     {
-        $category = $this->_objectManager->get('Magento\Framework\Registry')->registry('current_category');
+        $category = $this->_objectManager->get('Magento\Framework\Registry')->registry('currentcategory');
         return $category;
     }
 
@@ -119,20 +117,17 @@ class Products extends \Magento\Backend\Block\Widget\Grid\Extended
     {
 
         $categoryId = $this->getRequest()->getParam('id');
-        $category = $this->_categoryFactory->create()->load($categoryId);
+        $category = $this->categoryFactory->create()->load($categoryId);
 
-        $this->_productCollection = $this->_categoryFactory->create()->load($categoryId)->getProductCollection()
-        ->addAttributeToSelect('*');
-        $this->_productCollection->getSelect()->order(array(new \Zend_Db_Expr("CASE WHEN `cat_index_position` = '0' THEN 9999 ELSE 1 END"), 'cat_index_position ASC'));
-       // $this->_productCollection->getSelect()->order(new \Zend_Db_Expr("CASE WHEN `cat_index_position` = '0' THEN 9999 ELSE 1 END"));
+        $this->_productCollection = $this->categoryFactory->create()->load($categoryId)->getProductCollection()
+            ->addAttributeToSelect('*');
+        $this->_productCollection->getSelect()
+            ->order([new \Zend_Db_Expr("CASE WHEN `cat_index_position` = '0' THEN 9999 ELSE 1 END"), 'cat_index_position ASC']);
 
         //get values of current page
         $page = ($this->getRequest()->getParam('p')) ? $this->getRequest()->getParam('p') : 1;
         //get values of current limit
-        $pageSize = ($this->getRequest()->getParam('limit')) ? $this->getRequest()->getParam('limit') : $this->_pageSize;
-
-        //$this->_productCollection = $category->getProductCollection()
-           // ->addAttributeToSelect('*')->setOrder('cat_index_position','ASC');
+        $pageSize = ($this->getRequest()->getParam('limit')) ? $this->getRequest()->getParam('limit') : $this->pageSize;
 
         $storeId = (int)$this->getRequest()->getParam('store', 0);
         if ($storeId > 0) {
@@ -147,8 +142,9 @@ class Products extends \Magento\Backend\Block\Widget\Grid\Extended
 
     public function getImageData($_product)
     {
-        $product = $this->_productRepositoryFactory->create()->getById($_product->getId());
-        return $this->_storeManager->getStore()->getBaseUrl() . 'pub/media/catalog/product/' . $product->getData('thumbnail');
+        $product = $this->productRepositoryFactory->create()->getById($_product->getId());
+        return $this->storeManager->getStore()
+            ->getBaseUrl() . 'pub/media/catalog/product/' . $product->getData('thumbnail');
     }
 
     /*
@@ -161,7 +157,6 @@ class Products extends \Magento\Backend\Block\Widget\Grid\Extended
         return $formattedPrice = $priceHelper->currency($price, true, false);
     }
 
-
     /**
      * Retrieve list toolbar HTML
      *
@@ -172,13 +167,9 @@ class Products extends \Magento\Backend\Block\Widget\Grid\Extended
         return $this->getChildHtml('pager');
     }
 
-
     public function getFormAction()
     {
         $id = $this->getRequest()->getParam('id');
         return $this->getUrl('*/*/save', ['_current' => false, 'id' => $id, '_query' => false]);
-
     }
-
-
 }

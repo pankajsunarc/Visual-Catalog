@@ -11,8 +11,8 @@ use Magento\Framework\App\ResponseInterface;
 class Index extends Action
 {
 
-    protected $resultPageFactory;
-    protected $orderFactory;
+    private $resultPageFactory;
+    private $orderFactory;
 
     /**
      * Edit constructor.
@@ -44,6 +44,4 @@ class Index extends Action
         $resultPage->addBreadcrumb(__('Manage Catalog Categories'), __('Manage Catalog Positions'));
         return $resultPage;
     }//end execute()
-
-
 }//end class
